@@ -10954,7 +10954,10 @@ const main = async () => {
         });
 
         await request(`POST ${url}`, {
-            data: { github: pull_request_info.user.login },
+            data: { 
+                github: pull_request_info.user.login,
+                pullNumber: pull_number
+            },
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
