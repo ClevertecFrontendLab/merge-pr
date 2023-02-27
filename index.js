@@ -19,10 +19,27 @@ const main = async () => {
             pull_number,
         });
 
+        const { data: list_review_comments } = await octokit.rest.pulls.listReviewComments({
+            owner,
+            repo,
+            pull_number,
+        });
+
+        const statistics = list_review_comments.reduce((acc, { user }) => {
+            if (acc.some(({ reviewer }) => reviewer === user.login)) {
+                acc.find(({ reviewer }) => reviewer === user.login).commentsCount += 1;
+            } else {
+                acc.push({ reviewer: user.login, commentsCount: 1 });
+            }
+
+            return acc;
+        }, []);
+
         await request(`POST ${url}`, {
             data: { 
                 github: pull_request_info.user.login,
-                pullNumber: pull_number
+                pullNumber: pull_number,
+                statistics
             },
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
