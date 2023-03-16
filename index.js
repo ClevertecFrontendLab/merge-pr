@@ -25,6 +25,12 @@ const main = async () => {
             pull_number,
         });
 
+        const { data: list_reviews } = await octokit.rest.pulls.listReviews({
+            owner,
+            repo,
+            pull_number,
+        });
+
         const statistics = list_review_comments.reduce((acc, { user }) => {
             if (acc.some(({ reviewer }) => reviewer === user.login)) {
                 acc.find(({ reviewer }) => reviewer === user.login).commentsCount += 1;
@@ -34,6 +40,12 @@ const main = async () => {
 
             return acc;
         }, []);
+
+        list_reviews.forEach(({ user, state }) => {
+            if ((!statistics.some(({ reviewer }) => reviewer === user.login) && state === 'APPROVED')) {
+                statistics.push({ reviewer: user.login, commentsCount: 0 });
+            }
+        });
 
         await request(`POST ${url}`, {
             data: { 
