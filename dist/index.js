@@ -30852,20 +30852,21 @@ const main = async () => {
       },
     });
 
-    const {
-      data: { private: isPrivate },
-    } = await octokit.rest.repos.get({
-      owner,
-      repo,
-    });
+    //TODO: временно комментирую код который делает репу приватной после мержа в main
+    // const {
+    //   data: { private: isPrivate },
+    // } = await octokit.rest.repos.get({
+    //   owner,
+    //   repo,
+    // });
 
-    if (!isPrivate) {
-      await octokit.rest.repos.update({
-        owner,
-        repo,
-        private: true,
-      });
-    }
+    // if (!isPrivate) {
+    //   await octokit.rest.repos.update({
+    //     owner,
+    //     repo,
+    //     private: true,
+    //   });
+    // }
   } catch (error) {
     core.setFailed(error.message);
   }
